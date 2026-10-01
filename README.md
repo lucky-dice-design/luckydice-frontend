@@ -16,7 +16,7 @@ Minimalistische Multipage-Website mit Directus-faehiger Content-Struktur.
 3. Public Role Berechtigungen setzen:
    - Read: `site_settings`, `navigation_items`, `pages`, `services`, `projects`, `about_facts`, `process_steps`, `contact_channels`
    - Create: `contact_submissions`
-4. In `public/assets/config.js` die Directus URL setzen:
+4. In `dist/assets/config.js` die Directus URL setzen:
 
 ```js
 window.LDD_CONFIG = {
@@ -32,7 +32,7 @@ Ein Token ist nur noetig, wenn du die Inhalte nicht ueber die Public Role ausspi
 Die Website ist statisch. Ein einfacher Webserver reicht:
 
 ```bash
-npx serve public
+npx serve dist
 ```
 
-Ohne Directus nutzt die Website Fallback-Inhalte aus `public/assets/content.js`.
+Ohne Directus nutzt die Website Fallback-Inhalte aus `dist/assets/content.js`.

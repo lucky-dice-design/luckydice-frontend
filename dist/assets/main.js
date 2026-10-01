@@ -299,17 +299,24 @@ function createDiceNumberMesh(number) {
   canvas.height = size;
   const context = canvas.getContext("2d");
   context.clearRect(0, 0, size, size);
-  context.fillStyle = "rgba(247, 250, 252, 0.92)";
-  context.strokeStyle = "rgba(22, 35, 45, 0.8)";
-  context.lineWidth = 6;
-  context.beginPath();
-  context.arc(size / 2, size / 2, 42, 0, Math.PI * 2);
-  context.fill();
-  context.stroke();
-  context.fillStyle = "#16232d";
-  context.font = "700 46px Arial, sans-serif";
+
+  context.font = "800 54px Arial, sans-serif";
   context.textAlign = "center";
   context.textBaseline = "middle";
+
+  context.lineWidth = 9;
+  context.strokeStyle = "rgba(3, 12, 16, 0.52)";
+  context.strokeText(String(number), size / 2 + 3, size / 2 + 5);
+
+  context.lineWidth = 7;
+  context.strokeStyle = "rgba(129, 230, 217, 0.32)";
+  context.strokeText(String(number), size / 2 - 3, size / 2 - 3);
+
+  context.lineWidth = 2;
+  context.strokeStyle = "rgba(255, 255, 255, 0.4)";
+  context.strokeText(String(number), size / 2 - 1, size / 2 - 1);
+
+  context.fillStyle = "rgba(8, 27, 34, 0.72)";
   context.fillText(String(number), size / 2, size / 2 + 2);
 
   const texture = new THREE.CanvasTexture(canvas);
@@ -321,7 +328,7 @@ function createDiceNumberMesh(number) {
     depthWrite: false,
     side: THREE.FrontSide
   });
-  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(0.38, 0.38), material);
+  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(0.42, 0.42), material);
   return mesh;
 }
 

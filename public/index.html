@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Lucky Dice Design gestaltet klare Websites, Markenauftritte und digitale Systeme mit ruhiger Struktur und präzisem Detail." />
+    <title>Lucky Dice Design</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/assets/styles.css" />
+    <script src="/assets/config.js"></script>
+    <script type="module" src="/assets/main.js"></script>
+  </head>
+  <body data-page="home">
+    <header class="site-header">
+      <a class="brand-mark" href="/" aria-label="Lucky Dice Design Startseite">
+        <span class="brand-icon" aria-hidden="true">20</span>
+        <span>Lucky Dice Design</span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+        <span></span><span></span><span></span>
+      </button>
+      <nav id="site-nav" class="site-nav" aria-label="Hauptnavigation"></nav>
+    </header>
+
+    <main>
+      <section class="hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow" data-content="home.hero_eyebrow">Strategy, Webdesign & Dice-Level Detail</p>
+          <h1 data-content="home.hero_title">Digitale Auftritte mit klarer Linie und einem guten Wurf Charakter.</h1>
+          <p class="hero-lead" data-content="home.hero_text">Lucky Dice Design entwickelt Websites, visuelle Systeme und Directus-Strukturen fuer kleine Marken, kreative Projekte und Menschen, die Ordnung ohne Langeweile wollen.</p>
+          <div class="hero-actions">
+            <a class="button primary" href="/work/">Arbeiten ansehen</a>
+            <a class="button secondary" href="/contact/">Projekt anfragen</a>
+          </div>
+        </div>
+        <div class="dice-stage" aria-label="Interaktiver D20">
+          <canvas id="d20-canvas"></canvas>
+          <div class="dice-caption">
+            <span>Roll the idea</span>
+            <strong data-content="home.dice_label">D20 Interface Object</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="line-section split">
+        <div>
+          <p class="eyebrow" data-content="home.intro_eyebrow">Was entsteht</p>
+          <h2 data-content="home.intro_title">Ruhige Seiten, klare Systeme, genug Magie im Detail.</h2>
+        </div>
+        <p data-content="home.intro_text">Ich verbinde Design, saubere Frontend-Strukturen und ein Backend, das du selbst pflegen kannst. Jede Sektion ist so gedacht, dass Inhalt, Reihenfolge und Kontaktanfragen ueber Directus steuerbar bleiben.</p>
+      </section>
+
+      <section class="services-grid" data-repeat="services"></section>
+
+      <section class="featured-work">
+        <div class="section-heading">
+          <p class="eyebrow">Selected Work</p>
+          <h2>Projekte mit System</h2>
+        </div>
+        <div class="work-grid" data-repeat="featured-projects"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer"></footer>
+  </body>
+</html>

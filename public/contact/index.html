@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Kontakt zu Lucky Dice Design aufnehmen." />
+    <title>Kontakt | Lucky Dice Design</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/assets/styles.css" />
+    <script src="/assets/config.js"></script>
+    <script type="module" src="/assets/main.js"></script>
+  </head>
+  <body data-page="contact">
+    <header class="site-header">
+      <a class="brand-mark" href="/" aria-label="Lucky Dice Design Startseite">
+        <span class="brand-icon" aria-hidden="true">20</span>
+        <span>Lucky Dice Design</span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+        <span></span><span></span><span></span>
+      </button>
+      <nav id="site-nav" class="site-nav" aria-label="Hauptnavigation"></nav>
+    </header>
+
+    <main>
+      <section class="contact-layout">
+        <div>
+          <p class="eyebrow" data-content="contact.eyebrow">Kontakt</p>
+          <h1 data-content="contact.title">Erzaehl mir, was du bauen willst.</h1>
+          <p data-content="contact.text">Kontaktanfragen werden direkt als Datensaetze in Directus gespeichert. Dort kannst du Status, Notizen und naechste Schritte pflegen.</p>
+          <div class="contact-lines" data-repeat="contact-lines"></div>
+        </div>
+
+        <form class="contact-form" id="contact-form" onsubmit="return window.LDD_submitContact(event)">
+          <label>
+            Name
+            <input name="name" type="text" autocomplete="name" required />
+          </label>
+          <label>
+            E-Mail
+            <input name="email" type="email" autocomplete="email" required />
+          </label>
+          <label>
+            Projektart
+            <select name="project_type" required>
+              <option value="">Bitte waehlen</option>
+              <option>Website</option>
+              <option>Branding</option>
+              <option>Directus Backend</option>
+              <option>Sonstiges</option>
+            </select>
+          </label>
+          <label>
+            Nachricht
+            <textarea name="message" rows="6" required></textarea>
+          </label>
+          <button class="button primary" type="submit">Anfrage senden</button>
+          <p class="form-status" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+    </main>
+
+    <footer class="site-footer"></footer>
+  </body>
+</html>

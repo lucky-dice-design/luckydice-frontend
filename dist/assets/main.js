@@ -10,8 +10,7 @@ function applyTheme(theme) {
   document.documentElement.dataset.theme = nextTheme;
   localStorage.setItem(themeStorageKey, nextTheme);
   document.querySelectorAll(".theme-toggle").forEach((button) => {
-    const input = button.querySelector("input");
-    if (input) input.checked = nextTheme === "dark";
+    button.setAttribute("aria-checked", String(nextTheme === "dark"));
     button.querySelector(".theme-toggle__text").textContent = nextTheme === "dark" ? "Light" : "Dark";
   });
 }
@@ -24,11 +23,15 @@ function setupThemeToggle() {
   const preferredTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   applyTheme(savedTheme || preferredTheme);
 
-  const button = document.createElement("label");
+  const button = document.createElement("button");
   button.className = "theme-toggle";
-  button.innerHTML = '<input type="checkbox" aria-label="Darkmode umschalten" /><span class="theme-toggle__text"></span>';
-  button.querySelector("input").addEventListener("change", (event) => {
-    applyTheme(event.currentTarget.checked ? "dark" : "light");
+  button.type = "button";
+  button.setAttribute("role", "switch");
+  button.setAttribute("aria-label", "Darkmode umschalten");
+  button.innerHTML = '<span class="theme-toggle__track" aria-hidden="true"><span></span></span><span class="theme-toggle__text"></span>';
+  button.addEventListener("click", () => {
+    const current = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+    applyTheme(current === "dark" ? "light" : "dark");
   });
 
   header.appendChild(button);
@@ -240,7 +243,21 @@ function setupD20() {
     new THREE.WireframeGeometry(geometry),
     new THREE.LineBasicMaterial({ color: 0x81e6d9, transparent: true, opacity: 0.8 })
   );
-  scene.add(dice, wire);
+  const diceGroup = new THREE.Group();
+  diceGroup.add(dice, wire);
+
+  const positions = geometry.attributes.position;
+  for (let face = 0; face < positions.count; face += 3) {
+    const a = new THREE.Vector3().fromBufferAttribute(positions, face);
+    const b = new THREE.Vector3().fromBufferAttribute(positions, face + 1);
+    const c = new THREE.Vector3().fromBufferAttribute(positions, face + 2);
+    const center = new THREE.Vector3().addVectors(a, b).add(c).multiplyScalar(1 / 3).normalize();
+    const label = createDiceNumberSprite(face / 3 + 1);
+    label.position.copy(center.multiplyScalar(1.62));
+    diceGroup.add(label);
+  }
+
+  scene.add(diceGroup);
 
   scene.add(new THREE.AmbientLight(0xd9e6ee, 1.3));
   const key = new THREE.DirectionalLight(0x81e6d9, 2);
@@ -265,13 +282,40 @@ function setupD20() {
 
   resize();
   const animate = () => {
-    dice.rotation.x += (target.x - dice.rotation.x) * 0.045;
-    dice.rotation.y += (target.y - dice.rotation.y) * 0.045 + 0.002;
-    wire.rotation.copy(dice.rotation);
+    diceGroup.rotation.x += (target.x - diceGroup.rotation.x) * 0.045;
+    diceGroup.rotation.y += (target.y - diceGroup.rotation.y) * 0.045 + 0.002;
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
   };
   animate();
+}
+
+function createDiceNumberSprite(number) {
+  const size = 128;
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const context = canvas.getContext("2d");
+  context.clearRect(0, 0, size, size);
+  context.fillStyle = "rgba(247, 250, 252, 0.92)";
+  context.strokeStyle = "rgba(22, 35, 45, 0.8)";
+  context.lineWidth = 6;
+  context.beginPath();
+  context.arc(size / 2, size / 2, 42, 0, Math.PI * 2);
+  context.fill();
+  context.stroke();
+  context.fillStyle = "#16232d";
+  context.font = "700 46px Arial, sans-serif";
+  context.textAlign = "center";
+  context.textBaseline = "middle";
+  context.fillText(String(number), size / 2, size / 2 + 2);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  const material = new THREE.SpriteMaterial({ map: texture, transparent: true, depthTest: true, depthWrite: false });
+  const sprite = new THREE.Sprite(material);
+  sprite.scale.set(0.36, 0.36, 0.36);
+  return sprite;
 }
 
 loadContent().then((content) => {

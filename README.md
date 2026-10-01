@@ -1,6 +1,6 @@
 # Lucky Dice Design
 
-Minimalistische Multipage-Website mit Directus-faehiger Content-Struktur.
+Minimalistische Multipage-Website mit Directus-fähiger Content-Struktur.
 
 ## Seiten
 
@@ -25,7 +25,7 @@ window.LDD_CONFIG = {
 };
 ```
 
-Ein Token ist nur noetig, wenn du die Inhalte nicht ueber die Public Role ausspielst.
+Ein Token ist nur nötig, wenn du die Inhalte nicht über die Public Role ausspielst.
 
 ## Lokal ansehen
 

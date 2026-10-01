@@ -27,14 +27,11 @@
         { "field": "status", "type": "string", "default": "published" },
         { "field": "meta_title", "type": "string" },
         { "field": "meta_description", "type": "text" },
-        { "field": "eyebrow", "type": "string" },
         { "field": "title", "type": "text" },
         { "field": "text", "type": "text" },
-        { "field": "hero_eyebrow", "type": "string" },
         { "field": "hero_title", "type": "text" },
         { "field": "hero_text", "type": "text" },
         { "field": "dice_label", "type": "string" },
-        { "field": "intro_eyebrow", "type": "string" },
         { "field": "intro_title", "type": "text" },
         { "field": "intro_text", "type": "text" }
       ]

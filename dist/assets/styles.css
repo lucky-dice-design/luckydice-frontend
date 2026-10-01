@@ -76,15 +76,10 @@ a {
   font-weight: 750;
 }
 
-.brand-icon {
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  border: 1px solid var(--ink);
-  clip-path: polygon(50% 0, 96% 25%, 96% 75%, 50% 100%, 4% 75%, 4% 25%);
-  color: var(--accent-dark);
-  font-size: 0.78rem;
+.brand-logo {
+  display: block;
+  width: 42px;
+  height: auto;
 }
 
 .site-nav {
@@ -126,7 +121,7 @@ a {
 .theme-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 9px;
+  gap: 8px;
   min-height: 38px;
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.58);
@@ -138,16 +133,30 @@ a {
   user-select: none;
 }
 
-.theme-toggle input {
-  width: 18px;
+.theme-toggle__track {
+  position: relative;
+  width: 38px;
   height: 18px;
-  margin: 0;
-  accent-color: var(--accent-dark);
-  cursor: pointer;
+  border: 1px solid var(--line);
+  background: var(--surface);
 }
 
 :root[data-theme="dark"] .theme-toggle {
   background: rgba(21, 34, 43, 0.72);
+}
+
+.theme-toggle__track span {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 10px;
+  height: 10px;
+  background: var(--accent-dark);
+  transition: transform 180ms ease;
+}
+
+.theme-toggle[aria-checked="true"] .theme-toggle__track span {
+  transform: translateX(20px);
 }
 
 .theme-toggle__text {
@@ -192,12 +201,7 @@ main {
 }
 
 .eyebrow {
-  margin: 0 0 18px;
-  color: var(--accent-dark);
-  font-size: 0.78rem;
-  font-weight: 800;
-  letter-spacing: 0;
-  text-transform: uppercase;
+  display: none;
 }
 
 .hero-actions {
@@ -220,6 +224,12 @@ main {
 .button.primary {
   background: var(--ink);
   color: white;
+}
+
+:root[data-theme="dark"] .button.primary {
+  background: #f7fafc;
+  border-color: #f7fafc;
+  color: #0d151b;
 }
 
 .button.secondary {

@@ -251,9 +251,11 @@ function setupD20() {
     const a = new THREE.Vector3().fromBufferAttribute(positions, face);
     const b = new THREE.Vector3().fromBufferAttribute(positions, face + 1);
     const c = new THREE.Vector3().fromBufferAttribute(positions, face + 2);
-    const center = new THREE.Vector3().addVectors(a, b).add(c).multiplyScalar(1 / 3).normalize();
-    const label = createDiceNumberSprite(face / 3 + 1);
-    label.position.copy(center.multiplyScalar(1.62));
+    const center = new THREE.Vector3().addVectors(a, b).add(c).multiplyScalar(1 / 3);
+    const normal = center.clone().normalize();
+    const label = createDiceNumberMesh(face / 3 + 1);
+    label.position.copy(center.add(normal.clone().multiplyScalar(0.035)));
+    label.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), normal);
     diceGroup.add(label);
   }
 
@@ -290,7 +292,7 @@ function setupD20() {
   animate();
 }
 
-function createDiceNumberSprite(number) {
+function createDiceNumberMesh(number) {
   const size = 128;
   const canvas = document.createElement("canvas");
   canvas.width = size;
@@ -312,10 +314,15 @@ function createDiceNumberSprite(number) {
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
-  const material = new THREE.SpriteMaterial({ map: texture, transparent: true, depthTest: true, depthWrite: false });
-  const sprite = new THREE.Sprite(material);
-  sprite.scale.set(0.36, 0.36, 0.36);
-  return sprite;
+  const material = new THREE.MeshBasicMaterial({
+    map: texture,
+    transparent: true,
+    depthTest: true,
+    depthWrite: false,
+    side: THREE.FrontSide
+  });
+  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(0.38, 0.38), material);
+  return mesh;
 }
 
 loadContent().then((content) => {

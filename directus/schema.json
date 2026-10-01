@@ -1,5 +1,5 @@
 {
-  "note": "Directus blueprint for Lucky Dice Design. Create these collections and public permissions, or adapt the names if your Himmelsteil backend already has matching conventions.",
+  "note": "Directus blueprint for Lucky Dice Design. Create these collections and public permissions, or adapt the names if an existing content setup already has matching conventions.",
   "collections": [
     {
       "collection": "site_settings",

@@ -1,7 +1,7 @@
 export const fallbackContent = {
   settings: {
     site_name: "Lucky Dice Design",
-    footer_note: "Lucky Dice Design entwickelt minimale Websites, Markenauftritte und Directus-Systeme.",
+    footer_note: "Lucky Dice Design entwickelt klare Websites, UI/UX Konzepte, SEO/KI Analysen und E-Mail Designs.",
     email: "hello@luckydice.design",
     instagram: "@luckydicedesign"
   },
@@ -15,39 +15,40 @@ export const fallbackContent = {
     home: {
       hero_eyebrow: "Strategy, Webdesign & Dice-Level Detail",
       hero_title: "Digitale Auftritte mit klarer Linie und einem guten Wurf Charakter.",
-      hero_text: "Lucky Dice Design entwickelt Websites, visuelle Systeme und Directus-Strukturen fuer kleine Marken, kreative Projekte und Menschen, die Ordnung ohne Langeweile wollen.",
+      hero_text: "Lucky Dice Design entwickelt Websites, UI/UX Konzepte, Frontends und E-Mail Designs fuer kleine Marken, kreative Projekte und Menschen, die Ordnung ohne Langeweile wollen.",
       dice_label: "D20 Interface Object",
       intro_eyebrow: "Was entsteht",
       intro_title: "Ruhige Seiten, klare Systeme, genug Magie im Detail.",
-      intro_text: "Ich verbinde Design, saubere Frontend-Strukturen und ein Backend, das du selbst pflegen kannst. Jede Sektion ist so gedacht, dass Inhalt, Reihenfolge und Kontaktanfragen ueber Directus steuerbar bleiben."
+      intro_text: "Ich verbinde Website Design, UI/UX Denken, Frontend-Umsetzung und klare Analysen. Das Ergebnis soll leicht wirken, gut fuehren und technisch sauber funktionieren."
     },
     work: {
       eyebrow: "My Work",
       title: "Ausgewuerfelte Konzepte, sauber ausgespielt.",
-      text: "Eine kuratierte Auswahl aus Webdesign, Markenauftritt und Content-Systemen. Die Projektkarten kommen aus Directus und lassen sich dort sortieren, erweitern und veroeffentlichen."
+      text: "Eine kuratierte Auswahl aus Webdesign, UI/UX, Frontend-Umsetzung, SEO/KI Analyse und E-Mail Design."
     },
     about: {
       eyebrow: "About me",
-      title: "Design mit Struktur, Frontend mit Gefuehl, Backend mit Plan.",
-      text: "Ich baue digitale Auftritte fuer Menschen, die nicht zwischen schoen und wartbar waehlen wollen. Lucky Dice Design steht fuer klare Entscheidungen, feine Linien und Systeme, die im Alltag funktionieren."
+      title: "Design mit Struktur, Frontend mit Gefuehl, Analyse mit Plan.",
+      text: "Ich baue digitale Auftritte fuer Menschen, die nicht zwischen schoen, verstaendlich und funktional waehlen wollen. Lucky Dice Design steht fuer klare Entscheidungen, feine Linien und Interfaces, die im Alltag funktionieren."
     },
     contact: {
       eyebrow: "Kontakt",
       title: "Erzaehl mir, was du bauen willst.",
-      text: "Kontaktanfragen werden direkt als Datensaetze in Directus gespeichert. Dort kannst du Status, Notizen und naechste Schritte pflegen."
+      text: "Schreib mir kurz, worum es geht: Website, UI/UX, SEO/KI Analyse, Frontend oder E-Mail Design. Ich melde mich mit einem klaren naechsten Schritt."
     }
   },
   services: [
-    { title: "Websites", text: "Multipage-Auftritte mit klarer Informationsarchitektur, feiner Typografie und wartbaren Inhaltsbloecken.", number: "01" },
-    { title: "Brand Systems", text: "Visuelle Systeme fuer kleine Marken: Farben, Typografie, Lineart-Elemente und digitale Anwendungen.", number: "02" },
-    { title: "Directus Setup", text: "Collections, Rollen und Content-Modelle, die redaktionell angenehm bleiben und technisch sauber ausspielbar sind.", number: "03" }
+    { title: "Website Design UI/UX", text: "Klare Seitenstrukturen, ruhige Layouts und Nutzerfuehrung, die Besucher ohne Umwege ans Ziel bringt.", number: "01" },
+    { title: "SEO und KI Analyse", text: "Analyse und Beratung fuer Sichtbarkeit, Suchintention, KI-Auffindbarkeit und bessere Inhaltsentscheidungen.", number: "02" },
+    { title: "Frontend Entwicklung", text: "Umsetzung mit Schwerpunkt auf UI/UX, responsiven Details und Interfaces, die sich leicht anfuehlen.", number: "03" },
+    { title: "E-Mail Design", text: "Saubere Newsletter- und Kampagnenlayouts, die zur Marke passen und auf verschiedenen Clients funktionieren.", number: "04" }
   ],
   projects: [
     {
       title: "Himmelsteil",
-      type: "Website & Backend",
+      type: "Website Design & UI/UX",
       year: "2026",
-      text: "Eine ruhige Multipage-Site mit Directus-Struktur fuer flexible Inhalte und Kontaktmanagement.",
+      text: "Eine ruhige Multipage-Site mit klarer Nutzerfuehrung, feiner Typografie und modernem visuellen System.",
       highlight: true
     },
     {
@@ -66,14 +67,14 @@ export const fallbackContent = {
     }
   ],
   facts: [
-    { label: "Fokus", value: "Websites, Branding, CMS-Strukturen" },
+    { label: "Fokus", value: "Website Design, UI/UX, Frontend, SEO/KI Analyse" },
     { label: "Arbeitsweise", value: "Minimal, persoenlich, systematisch" },
-    { label: "Backend", value: "Directus-first Content-Modelle" }
+    { label: "Plus", value: "E-Mail Design fuer Newsletter und Kampagnen" }
   ],
   process: [
     { title: "Listen", text: "Ziele, Inhalte und Ton sauber einsammeln." },
-    { title: "Shape", text: "Struktur, Designsystem und Content-Modell festlegen." },
-    { title: "Build", text: "Frontend, Directus und Kontaktfluss verbinden." },
+    { title: "Shape", text: "Struktur, Designrichtung und Nutzerfuehrung festlegen." },
+    { title: "Build", text: "Frontend, UI Details und responsive Verhalten umsetzen." },
     { title: "Tune", text: "Responsive Details, Performance und Pflegekomfort pruefen." }
   ],
   contactLines: [

@@ -12,6 +12,19 @@
   --max: 1160px;
 }
 
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --ink: #eaf2f7;
+  --muted: #9db0bf;
+  --line: #334a59;
+  --paper: #0d151b;
+  --surface: #15222b;
+  --blue: #9fc6dc;
+  --soft-blue: #1b2d38;
+  --accent: #56f1df;
+  --accent-dark: #72f4e6;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -29,6 +42,13 @@ body {
     var(--paper);
   background-size: 44px 44px;
   color: var(--ink);
+}
+
+:root[data-theme="dark"] body {
+  background:
+    linear-gradient(90deg, rgba(51, 74, 89, 0.45) 1px, transparent 1px),
+    linear-gradient(rgba(51, 74, 89, 0.38) 1px, transparent 1px),
+    var(--paper);
 }
 
 a {
@@ -103,6 +123,38 @@ a {
   background: var(--ink);
 }
 
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 38px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.58);
+  color: var(--ink);
+  padding: 0 10px;
+  font: inherit;
+  font-weight: 750;
+  cursor: pointer;
+  user-select: none;
+}
+
+.theme-toggle input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--accent-dark);
+  cursor: pointer;
+}
+
+:root[data-theme="dark"] .theme-toggle {
+  background: rgba(21, 34, 43, 0.72);
+}
+
+.theme-toggle__text {
+  min-width: 34px;
+  font-size: 0.86rem;
+}
+
 main {
   width: min(100% - 32px, var(--max));
   margin: 0 auto;
@@ -174,6 +226,10 @@ main {
   background: rgba(255, 255, 255, 0.62);
 }
 
+:root[data-theme="dark"] .button.secondary {
+  background: rgba(21, 34, 43, 0.7);
+}
+
 .dice-stage {
   position: relative;
   min-height: 540px;
@@ -227,11 +283,19 @@ main {
 .work-grid,
 .process-strip {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1px;
   margin: 44px 0 84px;
   background: var(--line);
   border: 1px solid var(--line);
+}
+
+.services-grid,
+.process-strip {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.work-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .service-card,
@@ -240,6 +304,16 @@ main {
   min-height: 260px;
   padding: 28px;
   background: rgba(255, 255, 255, 0.78);
+}
+
+:root[data-theme="dark"] .service-card,
+:root[data-theme="dark"] .project-card,
+:root[data-theme="dark"] .process-strip article,
+:root[data-theme="dark"] .fact-list div,
+:root[data-theme="dark"] .contact-lines a,
+:root[data-theme="dark"] .contact-form,
+:root[data-theme="dark"] .system-line {
+  background: rgba(21, 34, 43, 0.78);
 }
 
 .service-card span,
@@ -447,6 +521,12 @@ main {
   font: inherit;
 }
 
+:root[data-theme="dark"] .contact-form input,
+:root[data-theme="dark"] .contact-form textarea,
+:root[data-theme="dark"] .contact-form select {
+  background: #101b22;
+}
+
 .contact-form input:focus,
 .contact-form textarea:focus,
 .contact-form select:focus {
@@ -497,6 +577,10 @@ main {
 
   .site-nav.is-open {
     display: flex;
+  }
+
+  .theme-toggle {
+    margin-left: auto;
   }
 
   .hero-grid,

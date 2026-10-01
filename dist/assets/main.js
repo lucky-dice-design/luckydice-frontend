@@ -3,6 +3,37 @@ import { fallbackContent } from "./content.js";
 
 const config = window.LDD_CONFIG || {};
 const pageKey = document.body.dataset.page || "home";
+const themeStorageKey = "ldd-theme";
+
+function applyTheme(theme) {
+  const nextTheme = theme === "dark" ? "dark" : "light";
+  document.documentElement.dataset.theme = nextTheme;
+  localStorage.setItem(themeStorageKey, nextTheme);
+  document.querySelectorAll(".theme-toggle").forEach((button) => {
+    const input = button.querySelector("input");
+    if (input) input.checked = nextTheme === "dark";
+    button.querySelector(".theme-toggle__text").textContent = nextTheme === "dark" ? "Light" : "Dark";
+  });
+}
+
+function setupThemeToggle() {
+  const header = document.querySelector(".site-header");
+  if (!header || header.querySelector(".theme-toggle")) return;
+
+  const savedTheme = localStorage.getItem(themeStorageKey);
+  const preferredTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  applyTheme(savedTheme || preferredTheme);
+
+  const button = document.createElement("label");
+  button.className = "theme-toggle";
+  button.innerHTML = '<input type="checkbox" aria-label="Darkmode umschalten" /><span class="theme-toggle__text"></span>';
+  button.querySelector("input").addEventListener("change", (event) => {
+    applyTheme(event.currentTarget.checked ? "dark" : "light");
+  });
+
+  header.appendChild(button);
+  applyTheme(document.documentElement.dataset.theme);
+}
 
 async function directusFetch(path, params = "") {
   if (!config.directusUrl) return null;
@@ -244,6 +275,7 @@ function setupD20() {
 }
 
 loadContent().then((content) => {
+  setupThemeToggle();
   renderNavigation(content.navigation);
   hydrateText(content.pages[pageKey]);
   renderRepeats(content);

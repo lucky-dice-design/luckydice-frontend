@@ -8,6 +8,11 @@ Minimalistische Multipage-Website mit Directus-fähiger Content-Struktur.
 - My Work
 - About me
 - Kontakt mit Directus-Submission
+- Impressum und Datenschutz mit editierbarem `legal_body` in der Collection `pages`
+
+Die Rechtstexte sind markierte Entwürfe. Firmendaten und freigegebene Texte
+in Directus ergänzen. Server-Konfiguration und Cronjob gehören ins separate
+Repository `luckydice-backend`.
 
 ## Directus verbinden
 

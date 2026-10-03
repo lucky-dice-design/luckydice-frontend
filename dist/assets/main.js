@@ -161,6 +161,8 @@ function renderFooter(settings) {
     <div>
       <a href="mailto:${settings.email}">${settings.email}</a>
       <span>${settings.instagram}</span>
+      <a href="/impressum/">Impressum</a>
+      <a href="/datenschutz/">Datenschutz</a>
     </div>
   `;
 }

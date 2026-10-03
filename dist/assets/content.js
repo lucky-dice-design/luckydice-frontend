@@ -2,7 +2,7 @@ export const fallbackContent = {
   settings: {
     site_name: "Lucky Dice Design",
     footer_note: "Lucky Dice Design entwickelt klare Websites, UI/UX Konzepte, SEO/KI Analysen und E-Mail Designs.",
-    email: "hello@luckydice.design",
+    email: "info@luckydicedesign.de",
     instagram: "@luckydicedesign"
   },
   navigation: [
@@ -25,6 +25,16 @@ export const fallbackContent = {
     about: {
       title: "Design mit Struktur, Frontend mit Gefühl, Analyse mit Plan.",
       text: "Ich baue digitale Auftritte für Menschen, die nicht zwischen schön, verständlich und funktional wählen wollen. Lucky Dice Design steht für klare Entscheidungen, feine Linien und Interfaces, die im Alltag funktionieren."
+    },
+    impressum: {
+      title: "Impressum",
+      text: "Angaben zu Lucky Dice Design",
+      legal_body: "ENTWURF – Angaben vor Veröffentlichung vervollständigen.\n\nLucky Dice Design\nInhaber: [Vollständigen Namen ergänzen]\n[Geschäftsanschrift ergänzen]\n\nKontakt\nE-Mail: info@luckydicedesign.de\n[Weitere erforderliche Angaben ergänzen]"
+    },
+    datenschutz: {
+      title: "Datenschutz",
+      text: "Informationen zum Umgang mit personenbezogenen Daten",
+      legal_body: "ENTWURF – Noch keine vollständige Datenschutzerklärung.\n\nHier den freigegebenen Datenschutztext für Lucky Dice Design einfügen.\n\nZu berücksichtigen: Website-Hosting auf dem IONOS-VPS, Serverprotokolle, Kontaktformular und Speicherung der Anfragen in Directus, lokale Speicherung der Theme-Einstellung sowie die externe Einbindung von Three.js über esm.sh.\n\nKontakt: info@luckydicedesign.de"
     },
     contact: {
       title: "Erzähl mir, was du bauen willst.",
@@ -72,7 +82,7 @@ export const fallbackContent = {
     { title: "Tune", text: "Responsive Details, Performance und Pflegekomfort prüfen." }
   ],
   contactLines: [
-    { label: "Mail", value: "hello@luckydice.design", url: "mailto:hello@luckydice.design" },
+    { label: "Mail", value: "info@luckydicedesign.de", url: "mailto:info@luckydicedesign.de" },
     { label: "Instagram", value: "@luckydicedesign", url: "https://instagram.com/luckydicedesign" }
   ]
 };

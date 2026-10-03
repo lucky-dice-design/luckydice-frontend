@@ -29,6 +29,7 @@
         { "field": "meta_description", "type": "text" },
         { "field": "title", "type": "text" },
         { "field": "text", "type": "text" },
+        { "field": "legal_body", "type": "text" },
         { "field": "hero_title", "type": "text" },
         { "field": "hero_text", "type": "text" },
         { "field": "intro_title", "type": "text" },

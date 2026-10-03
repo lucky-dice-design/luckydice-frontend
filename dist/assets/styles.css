@@ -700,6 +700,11 @@ main {
   }
 }
 
+.legal-page { max-width: 800px; padding: 48px 0 64px; }
+.legal-page h1 { font-size: 2.5rem; overflow-wrap: anywhere; }
+.legal-body { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.8; }
+.site-footer div { flex-wrap: wrap; }
+
 @media (max-width: 560px) {
   main,
   .site-header,

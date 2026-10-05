@@ -19,6 +19,8 @@ Repository `luckydice-backend`.
 In Directus unter `projects` steuern `slug`, `website_url` und `detail_body`
 die URL `/work/<slug>/`, den optionalen externen Website-Link und die
 ausführliche Beschreibung. Bestehende Projekte erhalten beim Setup einen Slug.
+Mit `screenshot` lässt sich ein Website-Screenshot hochladen; `screenshot_alt`
+enthält die Bildbeschreibung. Das Bild erscheint nur auf der Detailseite.
 
 ## Directus verbinden
 

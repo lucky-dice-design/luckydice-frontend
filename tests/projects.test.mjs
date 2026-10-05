@@ -16,3 +16,12 @@ test('project links distinguish internal details and optional external websites'
   assert.ok(detail.includes('First paragraph\n\nSecond paragraph'));
   assert.ok(!detail.includes('Zur Projektwebsite'));
 });
+
+test('project screenshot is optional and uses a safe same-origin asset URL', () => {
+  const project = { title: 'Website', text: 'Summary' };
+  assert.ok(!renderProjectDetail(project).includes('<img'));
+  const html = renderProjectDetail({ ...project, screenshot: '11111111-1111-4111-8111-111111111111', screenshot_alt: 'Website <overview>' });
+  assert.ok(html.includes('src="/cms/assets/11111111-1111-4111-8111-111111111111"'));
+  assert.ok(html.includes('alt="Website &lt;overview&gt;"'));
+  assert.ok(!renderProjectDetail({ ...project, screenshot: 'javascript:alert(1)' }).includes('<img'));
+});

@@ -29,12 +29,15 @@ export function projectCard(item) {
 
 export function renderProjectDetail(item) {
   const website = websiteUrl(item.website_url);
+  const screenshotId = typeof item.screenshot === 'object' ? item.screenshot?.id : item.screenshot;
+  const screenshotUrl = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(screenshotId || '') ? `/cms/assets/${screenshotId}` : '';
   return `<a class="project-back" href="/work/">&#8592; My Work</a>
     <header class="project-detail-heading">
       <h1>${escapeHtml(item.title)}</h1>
       <p class="project-detail-meta">${escapeHtml([item.type, item.year].filter(Boolean).join(' · '))}</p>
       <p class="project-summary">${escapeHtml(item.text)}</p>
     </header>
+    ${screenshotUrl ? `<figure class="project-screenshot"><a href="${screenshotUrl}" target="_blank" rel="noopener noreferrer" title="Screenshot in Originalgröße öffnen"><img src="${screenshotUrl}" alt="${escapeHtml(item.screenshot_alt || `Screenshot der Website ${item.title}`)}" decoding="async" /></a></figure>` : ''}
     <div class="project-detail-body">${escapeHtml(item.detail_body || item.text)}</div>
     ${website ? `<a class="button primary" href="${escapeHtml(website)}" target="_blank" rel="noopener noreferrer">Zur Projektwebsite <span aria-hidden="true">&#8599;</span></a>` : ''}`;
 }

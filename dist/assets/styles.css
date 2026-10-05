@@ -435,6 +435,9 @@ main {
 .project-detail-meta { color: var(--muted); }
 .project-summary { max-width: 680px; line-height: 1.7; }
 .project-detail-body { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.85; padding: 32px 0; }
+.project-screenshot { margin: 32px 0 0; }
+.project-screenshot a { display: block; }
+.project-screenshot img { display: block; width: 100%; height: auto; border: 1px solid var(--line); }
 .project-detail > .button { display: inline-flex; align-items: center; gap: 12px; }
 
 .featured-work,

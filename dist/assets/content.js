@@ -50,6 +50,9 @@ export const fallbackContent = {
   projects: [
     {
       title: "Himmelsteil",
+      slug: "himmelsteil",
+      website_url: "",
+      detail_body: "Eine ruhige Multipage-Site mit klarer Nutzerführung, feiner Typografie und modernem visuellen System.",
       type: "Website Design & UI/UX",
       year: "2026",
       text: "Eine ruhige Multipage-Site mit klarer Nutzerführung, feiner Typografie und modernem visuellen System.",
@@ -57,6 +60,9 @@ export const fallbackContent = {
     },
     {
       title: "Lucky Dice Design System",
+      slug: "lucky-dice-design-system",
+      website_url: "",
+      detail_body: "Lineart, grau-blaue Farbwelt und ein D20-Motiv als wiederkehrendes Markenelement.",
       type: "Brand Foundation",
       year: "2026",
       text: "Lineart, grau-blaue Farbwelt und ein D20-Motiv als wiederkehrendes Markenelement.",
@@ -64,6 +70,9 @@ export const fallbackContent = {
     },
     {
       title: "Creator Portfolio Kit",
+      slug: "creator-portfolio-kit",
+      website_url: "",
+      detail_body: "Ein modulares Portfolio-System für Arbeiten, Case Studies und schnelle redaktionelle Updates.",
       type: "Portfolio",
       year: "2026",
       text: "Ein modulares Portfolio-System für Arbeiten, Case Studies und schnelle redaktionelle Updates.",

@@ -14,6 +14,12 @@ Die Rechtstexte sind markierte Entwürfe. Firmendaten und freigegebene Texte
 in Directus ergänzen. Server-Konfiguration und Cronjob gehören ins separate
 Repository `luckydice-backend`.
 
+## Projektseiten
+
+In Directus unter `projects` steuern `slug`, `website_url` und `detail_body`
+die URL `/work/<slug>/`, den optionalen externen Website-Link und die
+ausführliche Beschreibung. Bestehende Projekte erhalten beim Setup einen Slug.
+
 ## Directus verbinden
 
 1. Collections aus `directus/schema.json` in Directus anlegen.

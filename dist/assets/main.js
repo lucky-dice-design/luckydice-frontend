@@ -1,5 +1,6 @@
 import * as THREE from "https://esm.sh/three@0.180.0";
 import { fallbackContent } from "./content.js";
+import { projectCard, renderProjectDetail } from "./projects.js";
 
 const config = window.LDD_CONFIG || {};
 const pageKey = document.body.dataset.page || "home";
@@ -88,7 +89,7 @@ function renderNavigation(items) {
   nav.innerHTML = items.map((item) => `<a href="${item.url}">${item.label}</a>`).join("");
 }
 
-function hydrateText(page) {
+function hydrateText(page = {}) {
   document.querySelectorAll("[data-content]").forEach((element) => {
     const [, field] = element.dataset.content.split(".");
     if (page[field]) element.textContent = page[field];
@@ -140,17 +141,26 @@ function renderRepeats(content) {
   }
 }
 
-function projectCard(item) {
-  return `
-    <article class="project-card">
-      <div class="project-topline">
-        <span>${item.type}</span>
-        <span>${item.year}</span>
-      </div>
-      <h3>${item.title}</h3>
-      <p>${item.text}</p>
-    </article>
-  `;
+async function setupProjectDetail(content) {
+  const container = document.querySelector('[data-project-detail]');
+  if (!container) return;
+  const slug = location.pathname.split('/').filter(Boolean)[1];
+  let project = content.projects.find(item => item.slug === slug);
+  // The collection response can be paginated; resolve the requested project explicitly.
+  if (config.directusUrl && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug || '')) {
+    try {
+      const items = await directusFetch('/items/projects', `?filter[slug][_eq]=${encodeURIComponent(slug)}&filter[status][_eq]=published&limit=1`);
+      project = items?.[0];
+    } catch { /* Keep the last exported content available during a CMS outage. */ }
+  }
+  if (!project) {
+    container.innerHTML = '<h1>Projekt nicht gefunden</h1><a class="project-back" href="/work/">Zurück zu My Work</a>';
+    document.title = 'Projekt nicht gefunden | Lucky Dice Design';
+    return;
+  }
+  container.innerHTML = renderProjectDetail(project);
+  document.title = `${project.title} | Lucky Dice Design`;
+  document.querySelector('meta[name="description"]').content = project.text || '';
 }
 
 function renderFooter(settings) {
@@ -340,6 +350,7 @@ loadContent().then((content) => {
   hydrateText(content.pages[pageKey]);
   renderRepeats(content);
   renderFooter(content.settings);
+  setupProjectDetail(content);
   setupMenu();
   setupContactForm();
   setupD20();

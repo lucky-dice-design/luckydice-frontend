@@ -49,3 +49,7 @@ npx serve dist
 ```
 
 Ohne Directus nutzt die Website Fallback-Inhalte aus `dist/assets/content.js`.
+
+## Automatisches VPS-Deployment
+
+Prüfungen und Deployment per GitHub Actions sind unter [deploy/README.md](deploy/README.md) beschrieben. Die einmalige Einrichtung auf GitHub und dem VPS ist vor der Aktivierung erforderlich.

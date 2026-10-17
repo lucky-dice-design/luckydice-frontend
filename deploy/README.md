@@ -1,5 +1,11 @@
 # GitHub Actions → VPS
 
+Der abgesicherte Einstiegspunkt benötigt die separat root-installierten Prüfer
+`/usr/local/libexec/lucky-verify-release` und
+`/usr/local/libexec/lucky-verify-publication`. Ohne sie bricht das Deployment ab.
+Die Einrichtung ist im Himmelsteil-Backend unter `deploy/RESTRICTED-SSH.md`
+beschrieben; bestehende öffentliche Dateirechte bleiben auf 0755/0644 begrenzt.
+
 `/.github/workflows/deploy.yml` prüft jeden Push und Pull Request. Nur nach
 bestandenen Prüfungen auf `master` wird deployt; ein Merge löst den normalen
 Push-Workflow aus. `workflow_dispatch` erlaubt einen erneuten Lauf auf diesem

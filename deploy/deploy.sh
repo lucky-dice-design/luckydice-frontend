@@ -14,8 +14,8 @@ exec 9>/run/lock/lucky-vps-deploy.lock
 flock -w 900 9
 work=$(mktemp -d /var/tmp/luckydice-frontend.XXXXXXXX)
 trap 'rm -rf -- "$work"' EXIT
-# Copy first: subsequent extraction is from a root-owned, stable archive.
-cp "$archive" "$work/release.tar.gz"
+# Stage a bounded archive and enforce the root-installed policy before extraction.
+/usr/local/libexec/lucky-verify-release luckydice-frontend "$archive" "$work/release.tar.gz"
 mkdir "$work/source"
 # git archive produces regular files; reject links and traversal before extraction.
 python3 - "$work/release.tar.gz" "$work/source" <<'PYTHON'
@@ -50,7 +50,8 @@ cd /opt/luckydicedesign/backend
 timeout 180 docker compose exec -T website node --input-type=module < sync-content.mjs > "$work/content.js"
 test -s "$work/content.js"
 install -m 0644 "$work/content.js" "$src/dist/assets/content.js"
-rsync -a --checksum --delay-updates --delete-delay --chown=root:root "$src/dist/" "$target/"
+/usr/local/libexec/lucky-verify-publication --tree "$src/dist"
+rsync -a --checksum --delay-updates --delete-delay --chown=root:root --chmod=D755,F644 "$src/dist/" "$target/"
 docker compose exec -T website node -e "fetch('http://127.0.0.1:3000/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
 # Test the shared proxy and both CMS backends, including TLS and host routing.
 for domain in admin.himmelsteil.de admin.luckydicedesign.de; do

@@ -1,6 +1,7 @@
 import * as THREE from "https://esm.sh/three@0.180.0";
 import { fallbackContent } from "./content.js";
 import { projectCard, renderProjectDetail } from "./projects.js";
+import { renderNavigation, renderContentRepeats, renderFooter } from "./content-renderers.js";
 
 const config = window.LDD_CONFIG || {};
 const pageKey = document.body.dataset.page || "home";
@@ -83,12 +84,6 @@ function firstOrValue(value) {
   return Array.isArray(value) ? value[0] : value;
 }
 
-function renderNavigation(items) {
-  const nav = document.querySelector(".site-nav");
-  if (!nav) return;
-  nav.innerHTML = items.map((item) => `<a href="${item.url}">${item.label}</a>`).join("");
-}
-
 function hydrateText(page = {}) {
   document.querySelectorAll("[data-content]").forEach((element) => {
     const [, field] = element.dataset.content.split(".");
@@ -97,48 +92,13 @@ function hydrateText(page = {}) {
 }
 
 function renderRepeats(content) {
-  const services = document.querySelector('[data-repeat="services"]');
-  if (services) {
-    services.innerHTML = content.services.map((item) => `
-      <article class="service-card">
-        <span>${item.number || "00"}</span>
-        <h3>${item.title}</h3>
-        <p>${item.text}</p>
-      </article>
-    `).join("");
-  }
+  renderContentRepeats(content);
 
   const projects = document.querySelector('[data-repeat="projects"]');
   const featured = document.querySelector('[data-repeat="featured-projects"]');
   const projectCards = content.projects.map(projectCard).join("");
   if (projects) projects.innerHTML = projectCards;
   if (featured) featured.innerHTML = content.projects.filter((item) => item.highlight).map(projectCard).join("");
-
-  const facts = document.querySelector('[data-repeat="facts"]');
-  if (facts) {
-    facts.innerHTML = content.facts.map((item) => `<div><dt>${item.label}</dt><dd>${item.value}</dd></div>`).join("");
-  }
-
-  const process = document.querySelector('[data-repeat="process"]');
-  if (process) {
-    process.innerHTML = content.process.map((item, index) => `
-      <article>
-        <span>${String(index + 1).padStart(2, "0")}</span>
-        <h2>${item.title}</h2>
-        <p>${item.text}</p>
-      </article>
-    `).join("");
-  }
-
-  const contactLines = document.querySelector('[data-repeat="contact-lines"]');
-  if (contactLines) {
-    contactLines.innerHTML = content.contactLines.map((item) => `
-      <a href="${item.url}">
-        <span>${item.label}</span>
-        <strong>${item.value}</strong>
-      </a>
-    `).join("");
-  }
 }
 
 async function setupProjectDetail(content) {
@@ -161,20 +121,6 @@ async function setupProjectDetail(content) {
   container.innerHTML = renderProjectDetail(project);
   document.title = `${project.title} | Lucky Dice Design`;
   document.querySelector('meta[name="description"]').content = project.text || '';
-}
-
-function renderFooter(settings) {
-  const footer = document.querySelector(".site-footer");
-  if (!footer) return;
-  footer.innerHTML = `
-    <p>${settings.footer_note}</p>
-    <div>
-      <a href="mailto:${settings.email}">${settings.email}</a>
-      <span>${settings.instagram}</span>
-      <a href="/impressum/">Impressum</a>
-      <a href="/datenschutz/">Datenschutz</a>
-    </div>
-  `;
 }
 
 function setupMenu() {

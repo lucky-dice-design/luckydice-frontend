@@ -6,7 +6,29 @@ Das bestehende Backend erlaubt diese Collection bereits, und `sync-content.mjs`
 exportiert die zusätzlichen Seitenfelder ohne Anpassung mit. Es ist keine neue
 öffentliche Collection und kein Token im Browser nötig.
 
-## Bestehendes Directus einmalig erweitern
+## Einrichtung über das bestehende Docker-Deployment
+
+Die About-Erweiterung wird im Repository `luckydice-backend` in das bestehende
+`setup.mjs` integriert. Diese Backend-Änderung muss zuerst gemergt und erfolgreich
+deployt sein. Der normale Backend-Deploymentlauf führt die Einrichtung bereits
+im Container `luckydice-cms` aus. Er verwendet die vorhandenen Zugangsdaten aus
+der Container-Umgebung und ergänzt die Felder, Repeater, Profilbild-Relation,
+fehlenden Startwerte und eingeschränkten Website-Leserechte automatisch.
+
+Auf dem VPS ist dafür **keine Node.js-Installation auf dem Host**, kein neuer
+Admin-Token und kein Directus-Neubau nötig. Es werden keine Docker-Imageversionen
+oder privilegierten Deployment-Einstiegspunkte geändert. Die Gateway-Freigabe
+der neuen About-Felder wird mit demselben Backend-Release aktualisiert.
+
+Nach dem erfolgreichen Backend-Deployment: Directus neu laden und unter
+**Seiten & Rechtstexte → about** die beschrifteten About-Gruppen öffnen.
+
+## Alternative: direkte Einrichtung vom Entwicklungsrechner
+
+Die folgenden Befehle gelten für einen Entwicklungsrechner mit Node.js 22 und
+einem vollständigen Frontend-Checkout. Sie sind **keine Befehle für das
+Home-Verzeichnis des VPS**; der Frontend-Deploy veröffentlicht dort nur `dist/`.
+Der automatische Backend-Weg oben benötigt dieses zusätzliche Skript nicht.
 
 Im Frontend-Projekt mit Node.js 22 ausführen. Zuerst der lokale Plan ohne Änderungen:
 
@@ -33,12 +55,10 @@ vorhandenen Texte, Bilder oder bewusst geleerten Listen. Es lässt sich nach ein
 Abbruch erneut ausführen. Vor produktiven Schemaänderungen das übliche
 Datenbank-Backup erstellen.
 
-Die Migration ist für die bestehende Directus-11-Konfiguration im Schwesterprojekt
-`luckydice-backend` vorbereitet. Die Live-Instanz wurde aus dieser Arbeitsumgebung
-nicht verändert. Ein späterer Lauf des alten Backend-`setup.mjs` kann die
-feldgenauen Rechte zurücksetzen: danach `setup-about.mjs --apply` erneut ausführen
-oder das Backend-Schema dauerhaft mit dem aktualisierten `directus/schema.json`
-abgleichen. Die Bildberechtigung ebenfalls mit übernehmen.
+Die Migration nutzt dieselben Felder wie die ergänzte Directus-12-Konfiguration
+im Schwesterprojekt `luckydice-backend`. Die Live-Instanz wurde aus dieser
+Arbeitsumgebung nicht direkt verändert. Das ergänzte Backend-Setup erhält auch
+bei späteren Deployments die benötigten Feld- und Bildberechtigungen.
 
 ## Redaktion
 

@@ -1,7 +1,7 @@
-// Additive migration: no existing field, page value or grant is removed.
+// Keeps active content; removes only the explicit list of retired About fields.
 import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
-import { aboutFields, aboutSeed } from './about-schema.mjs';
+import { aboutFields, aboutSeed, retiredAboutFields } from './about-schema.mjs';
 
 export async function installAbout(api) {
   const fields = await api('/fields/pages');
@@ -15,6 +15,9 @@ export async function installAbout(api) {
   const existingPages = await api('/items/pages?filter[slug][_eq]=about&limit=1');
   if (!existingPages[0]) throw new Error('About page missing. No changes made.');
   const known = new Map(fields.map(item => [item.field, item]));
+  for (const name of retiredAboutFields) {
+    if (known.has(name) && known.get(name).type !== 'text') throw new Error(`Unexpected type for retired field ${name}. Review before removing.`);
+  }
   for (const field of aboutFields) {
     const existing = known.get(field.field);
     if (existing?.type && existing.type !== field.type) throw new Error(`Unexpected type for ${field.field}. Review before installing.`);
@@ -41,8 +44,8 @@ export async function installAbout(api) {
     meta: { one_field: 'lucky_about_portraits', one_deselect_action: 'nullify' }, schema: { on_delete: 'SET NULL' }
   });
   if (!(pageGrant.fields || []).includes('*')) {
-    const nextFields = [...new Set([...(pageGrant.fields || []), ...aboutFields.filter(field => field.type !== 'alias').map(field => field.field)])];
-    if (nextFields.length !== (pageGrant.fields || []).length) await api(`/permissions/${pageGrant.id}`, 'PATCH', { fields: nextFields });
+    const nextFields = [...new Set([...(pageGrant.fields || []).filter(name => !retiredAboutFields.includes(name)), ...aboutFields.filter(field => field.type !== 'alias').map(field => field.field)])];
+    if (JSON.stringify(nextFields) !== JSON.stringify(pageGrant.fields || [])) await api(`/permissions/${pageGrant.id}`, 'PATCH', { fields: nextFields });
   }
   const portraitRule = { _and: [
     { type: { _in: ['image/png', 'image/jpeg', 'image/webp', 'image/avif'] } },
@@ -56,12 +59,18 @@ export async function installAbout(api) {
   const page = (await api('/items/pages?filter[slug][_eq]=about&limit=1'))[0];
   const seed = Object.fromEntries(Object.entries(aboutSeed).filter(([key, value]) => value !== null && (page[key] === null || page[key] === undefined)));
   if (Object.keys(seed).length) await api(`/items/pages/${encodeURIComponent(page.id)}`, 'PATCH', seed);
-  return { fields: aboutFields.length, preserved: true };
+  const removed = [];
+  for (const name of retiredAboutFields) {
+    if (!known.has(name)) continue;
+    await api(`/fields/pages/${name}`, 'DELETE');
+    removed.push(name);
+  }
+  return { fields: aboutFields.length, removed, preserved: true };
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
   if (!process.argv.includes('--apply')) {
-    console.log(JSON.stringify({ mode: 'plan-only', collection: 'pages', slug: 'about', fields: aboutFields.map(item => item.field), portraitRelation: 'directus_files.lucky_about_portraits', note: 'Use --apply with DIRECTUS_URL and DIRECTUS_ADMIN_TOKEN to install. Existing content is preserved.' }, null, 2));
+    console.log(JSON.stringify({ mode: 'plan-only', collection: 'pages', slug: 'about', fields: aboutFields.map(item => item.field), removeFields: retiredAboutFields, portraitRelation: 'directus_files.lucky_about_portraits', note: 'Use --apply with DIRECTUS_URL and DIRECTUS_ADMIN_TOKEN. Retired field values are deleted; active content is preserved.' }, null, 2));
   } else {
     const base = process.env.DIRECTUS_URL?.replace(/\/$/, '');
     const token = process.env.DIRECTUS_ADMIN_TOKEN;

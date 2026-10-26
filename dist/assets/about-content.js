@@ -17,7 +17,6 @@ export const aboutDefaults = {
   ],
   roll_label: 'Entdeckungswurf',
   dice_label: 'Interaktiver zwanzigseitiger Würfel',
-  dice_hint: '1 ist ein Patzer. 20 schaltet eine Bonus-Quest frei.',
   roll_result_label: 'Dein Wurf',
   roll_pending_label: 'Der Würfel rollt …',
   roll_bonus_label: 'Bonus-Quest: Der 60-Sekunden-Designcheck',
@@ -38,7 +37,6 @@ export const aboutDefaults = {
     { title: 'Abseits des Bildschirms', text: 'Hinter jedem Interface steht ein Mensch. Hier gibt es Raum für die persönliche Seite.', target: 'personal' }
   ],
   skills_title: 'Fähigkeiten',
-  skills_hint: 'Öffnen für Einblicke & Arbeitsproben',
   skills: [
     { title: 'UI/UX Design', text: 'Ich bringe Inhalte, Struktur und Gestaltung zusammen. Damit Menschen sich zurechtfinden und Marken ihren eigenen Ausdruck bekommen.', link_label: 'Arbeitsproben ansehen', url: '/work/', icon: 'layout' },
     { title: 'Frontend', text: 'Aus einem Entwurf wird ein Interface, das auf kleinen wie großen Bildschirmen funktioniert. Mit Sorgfalt für Details, Zugänglichkeit und Performance.', link_label: 'Projekte entdecken', url: '/work/', icon: 'code' },
@@ -58,14 +56,6 @@ export const aboutDefaults = {
     { title: 'Struktur schaffen', text: 'Komplexes ordnen. Klarheit herstellen.', icon: 'compass' },
     { title: 'Details verfeinern', text: 'Das Ganze sehen. Im Kleinen sorgfältig sein.', icon: 'spark' }
   ],
-  quests_title: 'Questlog',
-  projects_tab: 'Projekte',
-  process_tab: 'Mein Prozess',
-  project_link: 'Projekt ansehen',
-  project_empty: 'Neue Projekte sind in Vorbereitung.',
-  next_title: 'Dein nächstes Projekt',
-  next_text: 'Neue Ideen. Spannende Herausforderungen. Gemeinsam gestalten.',
-  next_link: 'Gemeinsam starten',
   personal_title: 'Nebenquests',
   personal_intro: 'Am Spieltisch, auf dem Rennrad, im Schnee oder im nächsten Game – hier geht die Geschichte weiter.',
   personal_open_label: 'Geschichte entdecken',

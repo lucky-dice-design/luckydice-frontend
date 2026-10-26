@@ -29,6 +29,11 @@
   box-sizing: border-box;
 }
 
+img {
+  object-fit: cover;
+  object-position: center;
+}
+
 html {
   scroll-behavior: smooth;
 }

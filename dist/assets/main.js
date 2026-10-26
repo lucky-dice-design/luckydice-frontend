@@ -1,11 +1,13 @@
-import * as THREE from "https://esm.sh/three@0.180.0";
 import { fallbackContent } from "./content.js";
 import { projectCard, renderProjectDetail } from "./projects.js";
 import { renderNavigation, renderContentRepeats, renderFooter } from "./content-renderers.js";
+import { mountAbout } from "./about.js";
+import { mergeAbout, profileFromPage } from "./about-content.js";
 
 const config = window.LDD_CONFIG || {};
 const pageKey = document.body.dataset.page || "home";
 const themeStorageKey = "ldd-theme";
+let aboutCopy = mergeAbout();
 
 function applyTheme(theme) {
   const nextTheme = theme === "dark" ? "dark" : "light";
@@ -13,7 +15,7 @@ function applyTheme(theme) {
   localStorage.setItem(themeStorageKey, nextTheme);
   document.querySelectorAll(".theme-toggle").forEach((button) => {
     button.setAttribute("aria-checked", String(nextTheme === "dark"));
-    button.querySelector(".theme-toggle__text").textContent = nextTheme === "dark" ? "Light" : "Dark";
+    button.querySelector(".theme-toggle__text").textContent = nextTheme === "dark" ? aboutCopy.light_label : aboutCopy.dark_label;
   });
 }
 
@@ -29,7 +31,7 @@ function setupThemeToggle() {
   button.className = "theme-toggle";
   button.type = "button";
   button.setAttribute("role", "switch");
-  button.setAttribute("aria-label", "Darkmode umschalten");
+  button.setAttribute("aria-label", pageKey === 'about' ? aboutCopy.theme_label : "Darkmode umschalten");
   button.innerHTML = '<span class="theme-toggle__track" aria-hidden="true"><span></span></span><span class="theme-toggle__text"></span>';
   button.addEventListener("click", () => {
     const current = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
@@ -44,7 +46,7 @@ async function directusFetch(path, params = "") {
   if (!config.directusUrl) return null;
   const base = config.directusUrl.replace(/\/$/, "");
   const headers = config.directusToken ? { Authorization: `Bearer ${config.directusToken}` } : {};
-  const response = await fetch(`${base}${path}${params}`, { headers });
+  const response = await fetch(`${base}${path}${params}`, { headers, signal: AbortSignal.timeout(8000) });
   if (!response.ok) throw new Error(`Directus request failed: ${response.status}`);
   const json = await response.json();
   return json.data;
@@ -65,7 +67,7 @@ async function loadContent() {
 
     return {
       ...fallbackContent,
-      settings: firstOrValue(settings) || fallbackContent.settings,
+      settings: { ...fallbackContent.settings, ...firstOrValue(settings) },
       navigation: navigation?.length ? navigation : fallbackContent.navigation,
       pages: { ...fallbackContent.pages, [pageKey]: firstOrValue(page) || fallbackContent.pages[pageKey] },
       services: services?.length ? services : fallbackContent.services,
@@ -180,11 +182,16 @@ function setupContactForm() {
   }
 }
 
-function setupD20() {
+async function setupD20() {
   const canvas = document.querySelector("#d20-canvas");
   if (!canvas) return;
-
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  let THREE, renderer;
+  try {
+    THREE = await import("https://esm.sh/three@0.180.0");
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  } catch (error) { console.warn('3D unavailable; content remains accessible.', error); return; }
+  canvas.parentElement.classList.add('has-webgl');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
   camera.position.set(0, 0, 5);
@@ -205,15 +212,18 @@ function setupD20() {
   diceGroup.add(dice, wire);
 
   const positions = geometry.attributes.position;
+  const faceOrientations = [];
   for (let face = 0; face < positions.count; face += 3) {
     const a = new THREE.Vector3().fromBufferAttribute(positions, face);
     const b = new THREE.Vector3().fromBufferAttribute(positions, face + 1);
     const c = new THREE.Vector3().fromBufferAttribute(positions, face + 2);
     const center = new THREE.Vector3().addVectors(a, b).add(c).multiplyScalar(1 / 3);
     const normal = center.clone().normalize();
-    const label = createDiceNumberMesh(face / 3 + 1);
+    const label = createDiceNumberMesh(THREE, face / 3 + 1);
     label.position.copy(center.add(normal.clone().multiplyScalar(0.035)));
     label.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), normal);
+    // Its inverse faces this numbered triangle toward the camera, text upright.
+    faceOrientations.push(label.quaternion.clone().invert());
     diceGroup.add(label);
   }
 
@@ -231,9 +241,11 @@ function setupD20() {
     renderer.setSize(rect.width, rect.height, false);
     camera.aspect = rect.width / rect.height;
     camera.updateProjectionMatrix();
+    renderer.render(scene, camera);
   };
 
-  window.addEventListener("resize", resize);
+  const observer = new ResizeObserver(resize);
+  observer.observe(canvas.parentElement);
   canvas.parentElement.addEventListener("pointermove", (event) => {
     const rect = canvas.getBoundingClientRect();
     target.x = ((event.clientY - rect.top) / rect.height - 0.5) * 1.2;
@@ -241,16 +253,55 @@ function setupD20() {
   });
 
   resize();
-  const animate = () => {
-    diceGroup.rotation.x += (target.x - diceGroup.rotation.x) * 0.045;
-    diceGroup.rotation.y += (target.y - diceGroup.rotation.y) * 0.045 + 0.002;
+  let frame, visible = true, rollUntil = 0, previous = 0;
+  let landing = null, landingFrom = null, landed = false, rolling = false;
+  let settleDuration = 300;
+  const animate = (now = 0) => {
+    const delta = Math.min((now - previous) / 16.67 || 1, 3);
+    previous = now;
+    if (rolling && landing) {
+      if (reducedMotion.matches || now >= rollUntil) {
+        diceGroup.quaternion.copy(landing);
+        rolling = false;
+        landed = true;
+      } else if (now >= rollUntil - settleDuration) {
+        landingFrom ||= diceGroup.quaternion.clone();
+        const progress = (now - (rollUntil - settleDuration)) / settleDuration;
+        diceGroup.quaternion.slerpQuaternions(landingFrom, landing, 1 - (1 - progress) ** 3);
+      } else {
+        diceGroup.rotateX(0.23 * delta);
+        diceGroup.rotateY(0.31 * delta);
+      }
+    } else if (!reducedMotion.matches && !landed) {
+      diceGroup.rotation.x += (target.x - diceGroup.rotation.x) * 0.045 * delta;
+      diceGroup.rotation.y += ((target.y - diceGroup.rotation.y) * 0.045 + 0.002) * delta;
+    }
     renderer.render(scene, camera);
-    requestAnimationFrame(animate);
+    frame = null;
+    if (visible && !document.hidden && !reducedMotion.matches && (!landed || rolling)) frame = requestAnimationFrame(animate);
   };
+  const resume = () => { if (frame) cancelAnimationFrame(frame); frame = null; if (visible && !document.hidden) { previous = performance.now(); animate(previous); } };
+  const intersection = new IntersectionObserver(entries => { visible = entries[0].isIntersecting; resume(); });
+  intersection.observe(canvas);
+  reducedMotion.addEventListener('change', resume);
+  document.addEventListener('visibilitychange', resume);
+  const showRoll = (value, duration = 950) => {
+    if (!Number.isInteger(value) || value < 1 || value > 20) return;
+    landing = faceOrientations[value - 1];
+    landingFrom = null;
+    settleDuration = Math.min(300, duration);
+    rollUntil = performance.now() + duration;
+    rolling = true;
+    landed = false;
+    resume();
+  };
+  canvas.addEventListener('dice-roll', event => showRoll(event.detail?.value, event.detail?.duration));
+  // A click may precede the optional Three.js download; retain its actual value.
+  if (canvas.dataset.rollValue) showRoll(Number(canvas.dataset.rollValue), 0);
   animate();
 }
 
-function createDiceNumberMesh(number) {
+function createDiceNumberMesh(THREE, number) {
   const size = 128;
   const canvas = document.createElement("canvas");
   canvas.width = size;
@@ -274,7 +325,7 @@ function createDiceNumberMesh(number) {
   context.strokeStyle = "rgba(255, 255, 255, 0.4)";
   context.strokeText(String(number), size / 2 - 1, size / 2 - 1);
 
-  context.fillStyle = "rgba(8, 27, 34, 0.72)";
+  context.fillStyle = "rgba(234, 250, 255, 0.96)";
   context.fillText(String(number), size / 2, size / 2 + 2);
 
   const texture = new THREE.CanvasTexture(canvas);
@@ -290,12 +341,27 @@ function createDiceNumberMesh(number) {
   return mesh;
 }
 
+
+// Render immediately; the independent About request never blocks the rest of the site.
+if (pageKey === 'about') mountAbout(aboutCopy, fallbackContent, config.directusUrl);
 loadContent().then((content) => {
+  if (pageKey === 'about') {
+    aboutCopy = mergeAbout(profileFromPage(content.pages.about));
+    mountAbout(aboutCopy, content, config.directusUrl);
+    document.querySelector('.brand-mark span').textContent = aboutCopy.brand_label;
+    document.querySelector('.brand-mark').setAttribute('aria-label', aboutCopy.brand_label);
+    document.querySelector('.nav-toggle').setAttribute('aria-label', aboutCopy.menu_label);
+    document.querySelector('.site-nav').setAttribute('aria-label', aboutCopy.navigation_label);
+  }
   setupThemeToggle();
   renderNavigation(content.navigation);
   hydrateText(content.pages[pageKey]);
   renderRepeats(content);
   renderFooter(content.settings);
+  if (pageKey === 'about') {
+    document.querySelector('.site-footer a[href="/impressum/"]').textContent = aboutCopy.legal_label;
+    document.querySelector('.site-footer a[href="/datenschutz/"]').textContent = aboutCopy.privacy_label;
+  }
   setupProjectDetail(content);
   setupMenu();
   setupContactForm();

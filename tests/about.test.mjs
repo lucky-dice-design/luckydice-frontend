@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { aboutDefaults, mergeAbout, portraitUrl, profileFromPage } from '../dist/assets/about-content.js';
 import { renderAbout, safeLink, twitchChannel } from '../dist/assets/about.js';
-import { aboutFields } from '../directus/about-schema.mjs';
+import { aboutFields, retiredAboutFields } from '../directus/about-schema.mjs';
 import { installAbout } from '../directus/setup-about.mjs';
 import { rollD20, outcomeForRoll } from '../dist/assets/about-roll.js';
 
@@ -57,6 +57,7 @@ function fixture() {
     if (method !== 'GET') writes.push({ path, method, body });
     if (path === '/fields/pages' && method === 'POST') { fields.push(body); return body; }
     if (path.startsWith('/fields/pages/') && method === 'PATCH') { const field = fields.find(item => item.field === path.split('/').at(-1)); field.meta = { ...field.meta, ...body.meta }; return field; }
+    if (path.startsWith('/fields/pages/') && method === 'DELETE') { const name = path.split('/').at(-1); fields.splice(fields.findIndex(item => item.field === name), 1); delete page[name]; return null; }
     if (path === '/fields/directus_files' && method === 'POST') { fileFields.push(body); return body; }
     if (path === '/relations' && method === 'POST') { relations.push(body); return body; }
     if (path.startsWith('/permissions/') && method === 'PATCH') { Object.assign(grants.find(item => item.id === Number(path.split('/').at(-1))), body); return null; }
@@ -92,6 +93,37 @@ test('migration preserves edited content, keeps published filters and adds only 
 test('migration refuses a missing website policy before writing', async () => {
   const state = fixture();
   await assert.rejects(() => installAbout((path, method, body) => path.startsWith('/policies?') ? [] : state.api(path, method, body)), /policy missing/);
+  assert.deepEqual(state.writes, []);
+});
+
+test('only the explicit ten retired About fields are deleted and cannot be reseeded', async () => {
+  const state = fixture();
+  state.fields.push({ field: 'title', type: 'text' }, { field: 'sheet_custom_note', type: 'text' });
+  for (const name of retiredAboutFields) { state.fields.push({ field: name, type: 'text' }); state.page[name] = 'Retired copy'; }
+  state.grants[0].fields.push(...retiredAboutFields);
+  const result = await installAbout(state.api);
+  assert.equal(retiredAboutFields.length, 10);
+  assert.deepEqual(result.removed, retiredAboutFields);
+  assert.deepEqual(state.writes.filter(item => item.method === 'DELETE').map(item => item.path), retiredAboutFields.map(name => `/fields/pages/${name}`));
+  for (const name of retiredAboutFields) {
+    assert.ok(!state.fields.some(item => item.field === name));
+    assert.ok(!state.grants[0].fields.includes(name));
+    assert.ok(!Object.hasOwn(state.page, name));
+    assert.ok(!aboutFields.some(item => item.field === name));
+    assert.ok(!Object.hasOwn(aboutDefaults, name.slice(6)));
+  }
+  assert.ok(state.fields.some(item => item.field === 'title'));
+  assert.ok(state.fields.some(item => item.field === 'sheet_custom_note'));
+  assert.equal(state.page.sheet_title, 'Mein eigener Text');
+  state.writes.length = 0;
+  await installAbout(state.api);
+  assert.deepEqual(state.writes, []);
+});
+
+test('cleanup refuses unexpected field types before making any changes', async () => {
+  const state = fixture();
+  state.fields.push({ field: retiredAboutFields[0], type: 'json' });
+  await assert.rejects(() => installAbout(state.api), /Unexpected type for retired field/);
   assert.deepEqual(state.writes, []);
 });
 

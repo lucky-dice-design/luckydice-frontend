@@ -14,6 +14,9 @@ deployt sein. Der normale Backend-Deploymentlauf führt die Einrichtung bereits
 im Container `luckydice-cms` aus. Er verwendet die vorhandenen Zugangsdaten aus
 der Container-Umgebung und ergänzt die Felder, Repeater, Profilbild-Relation,
 fehlenden Startwerte und eingeschränkten Website-Leserechte automatisch.
+Es entfernt außerdem gezielt die zehn nicht mehr verwendeten Textfelder des
+alten Questlogs und der zwei entfernten Hinweise. Der bestehende Backend-
+Deploymentlauf sichert vorher die Datenbank.
 
 Auf dem VPS ist dafür **keine Node.js-Installation auf dem Host**, kein neuer
 Admin-Token und kein Directus-Neubau nötig. Es werden keine Docker-Imageversionen
@@ -51,7 +54,9 @@ Der vorhandene Veröffentlichungsfilter bleibt erhalten. Für Bilder ergänzt es
 gezielt den Zugriff auf unterstützte Bilddateien, die dem veröffentlichten
 `about`-Datensatz zugewiesen sind; bestehende Screenshot-Regeln bleiben bestehen.
 Es ergänzt nur leere (`null`) oder fehlende Startwerte und überschreibt keine
-vorhandenen Texte, Bilder oder bewusst geleerten Listen. Es lässt sich nach einem
+aktiven Texte, Bilder oder bewusst geleerten Listen. Die zehn ausdrücklich
+ausgemusterten About-Felder werden einschließlich ihrer Werte gelöscht.
+Es lässt sich nach einem
 Abbruch erneut ausführen. Vor produktiven Schemaänderungen das übliche
 Datenbank-Backup erstellen.
 
@@ -91,9 +96,11 @@ bei späteren Deployments die benötigten Feld- und Bildberechtigungen.
 6. **Kontakt** und **Navigation & Bedienelemente**: Auch CTA, Linktexte,
    Farbschema-Schalter und barrierefreie Beschreibungen sind bearbeitbar.
 
-Das frühere Questlog mit Projekt- und Prozess-Tabs ist entfernt. Alte Questlog-
-Textfelder bleiben zur Datenerhaltung bestehen und werden vom Einrichtungsskript
-im Editor ausgeblendet. Bestehende Würfel-Ziele `quests` führen jetzt zu den
+Das frühere Questlog mit Projekt- und Prozess-Tabs ist entfernt. Seine acht
+Textfelder sowie `sheet_dice_hint` und `sheet_skills_hint` werden beim nächsten
+Backend-Deployment gelöscht. Nur die ausdrückliche Liste `retiredAboutFields`
+wird gelöscht; gemeinsam genutzte Felder wie `pages.title` und `pages.text`
+bleiben erhalten. Bestehende Würfel-Ziele `quests` führen weiterhin zu den
 Nebenquests. Der technische Feldname der Karten bleibt `sheet_personal`;
 vorhandene persönliche Einträge bleiben erhalten. Die Navigation kommt aus
 `navigation_items`, allgemeine Footertexte,
